@@ -14,10 +14,10 @@ class LuhnyBinChecker
   end
 
   def digits(n)
-    n.scan(/\d/).map{ |c| c.to_i }
+    n.to_s().scan(/\d/).map{ |c| c.to_i }
   end
 
-  def doubleSecond
+  def doubleSecond(arr)
     arr.each_with_index do |item, i|
       arr[i] = arr[i] * 2 if (i %2 == 0)
     end
@@ -42,8 +42,8 @@ end
 
 class CreditCard
   attr_reader :number
-  def setCardNumber(number)
-    @cardNumber = number
+  def initialize(number)
+    @number = number
   end
 
   def verify
@@ -63,7 +63,7 @@ if __FILE__ == $0
    if card.verify()
      puts "Credit card number is valid"
   else
-     puts "Credit card number is valid"
+     puts "Credit card number is not valid"
   end
 
 end
