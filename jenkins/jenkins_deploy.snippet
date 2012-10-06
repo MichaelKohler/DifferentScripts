@@ -1,0 +1,54 @@
+def successful = true
+def deployed = false
+
+// Filter Errors
+if (manager.logContains(".*Error.*")) {
+    manager.addWarningBadge("Build Error!.")
+    manager.createSummary("error.gif").appendText("<h1>There was a build error!</h1>", false, false, false, "red")
+    manager.buildFailure()
+    successful = false
+}
+
+// Filter test failures and errors
+if (manager.logContains(".*[^0].{1}(failures|errors).*")) {
+    manager.addWarningBadge("Test failed!.")
+    manager.createSummary("warning.gif").appendText("<h1>There was a test fail!</h1>", false, false, false, "yellow")
+    manager.buildUnstable()
+    successful = false
+}
+
+// Mark build as successful and deploy it
+if (successful) {
+  // Deploy build
+  def command = "cp -R -f /var/lib/jenkins/workspace/ESE2012-team3 /var/www/"
+  def proc = command.execute()
+  proc.waitFor()
+  println "DEPLOY: return code: ${ proc.exitValue()}"
+  println "DEPLOY: stderr: ${proc.err.text}"
+  println "DEPLOY: stdout: ${proc.in.text}"
+  if (proc.exitValue() == 0)
+    deployed = true
+
+  // Mark as deployed
+  if (deployed) {
+    manager.addShortText("deployed")
+    manager.createSummary("gear2.gif").appendText("<h2>Successfully deployed</h2>", false)
+
+    currentBuildNumber = manager.build.number
+    if(manager.setBuildNumber(currentBuildNumber - 1)) {
+      actions = manager.build.actions
+      actions.each { action ->
+          if (action.metaClass.hasProperty(action, "text") && action.text.contains("deployed")) {
+              actions.remove(action)
+          }
+      }
+      currDate = new Date().dateTimeString
+      manager.addShortText("undeployed: $currDate", "grey", "white", "0px", "white")
+      manager.createSummary("gear2.gif").appendText("<h2>Undeployed: $currDate</h2>", false, false, false, "grey")
+    }
+  }
+  else {
+    manager.addShortText("deploy error")
+    manager.createSummary("error.gif").appendText("<h2>Error while deploying</h2>", false)
+  }
+}
