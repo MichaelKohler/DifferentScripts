@@ -1,12 +1,12 @@
-def successful = true
-def deployed = false
+//def successful = true
+//def deployed = false
 
 // Filter Errors
 if (manager.logContains(".*Error.*")) {
     manager.addWarningBadge("Build Error!.")
     manager.createSummary("error.gif").appendText("<h1>There was a build error!</h1>", false, false, false, "red")
     manager.buildFailure()
-    successful = false
+    //successful = false
 }
 
 // Filter test failures and errors
@@ -14,16 +14,16 @@ if (manager.logContains(".*[^0].{1}(failures|errors).*")) {
     manager.addWarningBadge("Test failed!.")
     manager.createSummary("warning.gif").appendText("<h1>There was a test fail!</h1>", false, false, false, "yellow")
     manager.buildUnstable()
-    successful = false
+    //successful = false
 }
 
 // Mark build as successful and deploy it
-if (successful) {
+/*if (successful) {
   // Deploy build
   def command = "cp -R -f /var/lib/jenkins/workspace/ESE2012-team3 /var/www/"
   def proc = command.execute()
   proc.waitFor()
-  println "DEPLOY: return code: ${ proc.exitValue()}"
+  println "DEPLOY: return code: ${proc.exitValue()}"
   println "DEPLOY: stderr: ${proc.err.text}"
   println "DEPLOY: stdout: ${proc.in.text}"
   if (proc.exitValue() == 0)
@@ -31,6 +31,19 @@ if (successful) {
 
   // Mark as deployed
   if (deployed) {
+    // Kill previous ruby instances
+    def proc_id = "pidof ruby".execute()
+    println("Now waiting for PID")
+    proc_id.waitFor()
+    def proc_kill = "kill ${procId.in.text}".execute()
+    println("Now waiting for KILL")
+    proc_kill.waitFor()
+  
+    // Run it on the server
+    def proc_run = "/var/www/run_ese.sh".execute()
+    println "RUN: stderr: ${proc_run.err.text}"
+    println "RUN: stdout: ${proc_run.in.text}"
+  
     manager.addShortText("deployed")
     manager.createSummary("gear2.gif").appendText("<h2>Successfully deployed</h2>", false)
 
@@ -51,4 +64,4 @@ if (successful) {
     manager.addShortText("deploy error")
     manager.createSummary("error.gif").appendText("<h2>Error while deploying</h2>", false)
   }
-}
+}*/
