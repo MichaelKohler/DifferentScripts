@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<body>
+<textarea id='message'></textarea>
+  <h2>Test should not be replaced</h3>
+  <h2>REPLACE THIS</h2>
+  <h3>If this is present, we always replace this one</h3>
+<a href="javascript:(function(){var b=document.querySelector('#message');var d=document.createElement('div');var i=document.createElement('input');i.id='a';i.onkeypress=function(e){if(e.keyCode==13){var a=document.querySelector('#a');b.value+='[img]http://www.picobudget.com/tw/'+i.value+'.gif[/img]'}else{return true;}};d.appendChild(i);var r=document.querySelector('h3');if(!r){r=document.getElementsByTagName('h2')[1]}r.parentNode.replaceChild(d,r);})()">Bookmarklet</a>
+</body>
+</html>
