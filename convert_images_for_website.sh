@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 SIZE=$1
 SIZE2=$2
 FORMAT=$3
